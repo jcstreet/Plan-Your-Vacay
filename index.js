@@ -17,31 +17,34 @@ function displayResults(responseJson) {
     $('#results-list').empty();
     $('#js-error-message').empty();
 
-    for (let i = 0; i < responseJson.length; i++) {
+    console.log(responseJson.data[0].fullName);
+
+    for (let i = 0; i < responseJson.data.length; i++) {
         $('#results-list').append(
-            `<li><h3>${responseJson[i].name}</h3>
-            <a href=${responseJson[i].html_url} target="blank">${responseJson[i].html_url}</a>
+            `<li><h3>${responseJson.data[i].fullName}</h3>
+            <p>${responseJson.data[i].description}</p>
+            <a href=${responseJson.data[i].url} target="blank">${responseJson.data[i].url}</a>
             </li>`            
     )};
     $('#results').removeClass('hidden')
 }
 
-function getNews(query, maxResults) {
+function getParks(query, maxResults) {
     const params = {
         stateCode: query,
         limit: maxResults,
+        api_key: apiKey
     };
     const queryString = formatQueryParams(params);
     const url = searchURL + '?' + queryString;
 
-    console.log(url);
+    // const options = {
+        // Why can't I send the API key this way???
+        // headers: new Headers({
+        // "X-Api-Key": apiKey})
+    // };
 
-    const options = {
-        headers: new Headers({
-        "X-Api-Key": apiKey})
-    };
-
-    fetch(url, options)
+    fetch(url)
         .then(response => {
         if (response.ok) {
             return response.json();
@@ -59,7 +62,7 @@ function watchForm() {
     event.preventDefault();
     const searchTerm = $('#js-search-term').val();
     const maxResults = $('#js-max-results').val();
-    getNews(searchTerm, maxResults);
+    getParks(searchTerm, maxResults);
     });
 }
 
